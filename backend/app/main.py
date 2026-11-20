@@ -37,6 +37,7 @@ app.include_router(tasks.router)
 app.include_router(checkins.router)
 
 
-@app.get("/api/health")
+# HEAD is allowed because uptime monitors (UptimeRobot) probe with HEAD requests.
+@app.api_route("/api/health", methods=["GET", "HEAD"])
 def health_check():
     return {"status": "ok", "ai_configured": settings.has_ai_configured}

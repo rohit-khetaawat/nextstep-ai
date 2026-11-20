@@ -146,3 +146,8 @@ def test_checkin_flow_marks_completed_task(client, monkeypatch):
     response = client.post(f"/api/goals/{goal_id}/checkins", json={"message": "I finished the basics."})
     assert response.status_code == 200
     assert response.json()["classification"]["category"] == "progress"
+
+
+def test_health_check_allows_get_and_head(client):
+    assert client.get("/api/health").status_code == 200
+    assert client.head("/api/health").status_code == 200
