@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: nextstep-ai-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: ENVIRONMENT
+        value: production
+      - key: AI_PROVIDER
+        value: openrouter
+      - key: OPENROUTER_MODEL
+        value: google/gemma-4-26b-a4b-it:free
+      # Secrets and per-deployment values: set these in the Render dashboard.
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false

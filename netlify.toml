@@ -1,0 +1,13 @@
+[build]
+  base = "frontend"
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Single-page app: serve index.html for every route so refreshing /goals/1/roadmap works.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
