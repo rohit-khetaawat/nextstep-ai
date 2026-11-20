@@ -1435,9 +1435,13 @@ a.strip-block:hover {
 /* ---------- responsive ---------- */
 
 @media (max-width: 900px) {
+  .plan-grid > *,
+  .landing-hero > * {
+    min-width: 0;
+  }
   .plan-grid,
   .landing-hero {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .landing-hero {
     gap: var(--s5);
@@ -1469,7 +1473,7 @@ a.strip-block:hover {
   }
   .field-row,
   .profile-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .strip {
     padding: var(--s3) var(--s3) var(--s4);
@@ -1486,10 +1490,10 @@ a.strip-block:hover {
     flex-direction: column;
   }
   .steps-band {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .gap-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--s2);
   }
   .bottomnav {
@@ -1528,4 +1532,204 @@ a.strip-block:hover {
   .form-foot .btn {
     width: 100%;
   }
+}
+
+/* ---------- touch + device refinements ---------- */
+
+/* Touch screens: 44px minimum targets, no sticky hover. */
+@media (pointer: coarse) {
+  .btn,
+  .btn-sm,
+  .example-chip,
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+  }
+  .example-chip {
+    display: inline-flex;
+    align-items: center;
+  }
+  /* Keep the 24px mark visually, widen the hit area around it. */
+  .task-toggle {
+    position: relative;
+  }
+  .task-toggle::after {
+    content: "";
+    position: absolute;
+    inset: -10px;
+  }
+  /* 16px+ stops iOS Safari zooming the page on input focus. */
+  input,
+  select,
+  textarea {
+    font-size: max(16px, 1rem);
+  }
+}
+
+/* Tablet portrait: keep the desktop top nav, tighten the gutters. */
+@media (min-width: 721px) and (max-width: 1024px) {
+  .topbar-inner {
+    padding: 0 var(--s4);
+    gap: var(--s4);
+  }
+  .page {
+    padding: var(--s5) var(--s5) var(--s7);
+  }
+  .landing-hero {
+    padding-top: var(--s4);
+  }
+}
+
+/* Small phones (iPhone SE, 320-375). */
+@media (max-width: 380px) {
+  .page {
+    padding-left: var(--s3);
+    padding-right: var(--s3);
+  }
+  .brand {
+    font-size: 1.35rem;
+  }
+  .topbar-actions {
+    gap: var(--s1);
+  }
+  .bottomnav a {
+    font-size: 0.7rem;
+  }
+  .page-head {
+    gap: var(--s3);
+  }
+}
+
+/* Landscape phones: the bottom bar eats too much of a short screen. */
+@media (max-width: 900px) and (max-height: 480px) and (orientation: landscape) {
+  .topbar {
+    position: static;
+  }
+  .bottomnav a {
+    flex-direction: row;
+    justify-content: center;
+    gap: var(--s2);
+    padding: 4px 0;
+  }
+  .page {
+    padding-bottom: calc(var(--s7) + 16px);
+  }
+}
+
+/* Long unbroken strings (goal titles, URLs) never push the layout wide. */
+.page h1,
+.page h2,
+.page h3,
+.task-title,
+.lede {
+  overflow-wrap: anywhere;
+}
+
+@media (orientation: landscape) and (max-height: 480px) {
+  .topbar-inner,
+  .page {
+    padding-left: max(var(--s4), env(safe-area-inset-left));
+    padding-right: max(var(--s4), env(safe-area-inset-right));
+  }
+}
+
+/* ---------- account + history ---------- */
+
+.seg {
+  display: flex;
+  gap: 0;
+  margin-bottom: var(--s4);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface-sunk);
+  padding: 3px;
+}
+.seg button {
+  flex: 1;
+  min-height: 44px;
+  font: 600 0.95rem var(--font-ui);
+  color: var(--muted);
+  background: none;
+  border: 0;
+  border-radius: calc(var(--radius) - 2px);
+  cursor: pointer;
+}
+.seg button[aria-selected="true"] {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.12);
+}
+
+.linklike {
+  font: inherit;
+  color: var(--blue);
+  background: none;
+  border: 0;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.user-chip .user-name {
+  max-width: 11ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-goal {
+  margin-bottom: var(--s3);
+}
+.history-goal summary {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  cursor: pointer;
+  list-style-position: outside;
+}
+.history-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.history-body {
+  margin-top: var(--s4);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s3);
+}
+.history-body h3 {
+  font-size: 1.1rem;
+  margin-top: var(--s2);
+}
+.chat {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+.chat li {
+  border-left: 3px solid var(--line-strong);
+  padding-left: var(--s3);
+}
+.chat-q {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+.chat-a {
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+.chat-date {
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin-top: 2px;
 }

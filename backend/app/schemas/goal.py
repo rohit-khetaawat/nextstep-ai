@@ -6,6 +6,7 @@ class GoalCreateRequest(BaseModel):
     description: str = ""
     category: str = ""
     target_date: str = ""
+    user_id: int | None = None
 
     @field_validator("title")
     @classmethod

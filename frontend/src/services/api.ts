@@ -1,12 +1,15 @@
+import { readUser } from "../lib/session";
 import type {
   AdaptResponse,
   AnswerSubmission,
   CheckInResponse,
   Goal,
+  HistoryResponse,
   QuestionSetResponse,
   Roadmap,
   Task,
   TaskStatus,
+  UserAccount,
 } from "../types";
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? "";
@@ -52,7 +55,18 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 
 export const api = {
   createGoal: (payload: { title: string; description?: string; category?: string; target_date?: string }) =>
-    request<Goal>("/api/goals", { method: "POST", body: JSON.stringify(payload) }),
+    request<Goal>("/api/goals", {
+      method: "POST",
+      body: JSON.stringify({ ...payload, user_id: readUser()?.id }),
+    }),
+
+  createUser: (username: string) =>
+    request<UserAccount>("/api/users", { method: "POST", body: JSON.stringify({ username }) }),
+
+  signIn: (username: string) =>
+    request<UserAccount>("/api/users/login", { method: "POST", body: JSON.stringify({ username }) }),
+
+  getHistory: (userId: number) => request<HistoryResponse>(`/api/users/${userId}/history`),
 
   getGoal: (goalId: number) => request<Goal>(`/api/goals/${goalId}`),
 

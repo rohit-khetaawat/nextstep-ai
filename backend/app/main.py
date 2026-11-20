@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import checkins, goals, tasks
+from app.api import checkins, goals, tasks, users
 from app.config import get_settings
 from app.core.logging import logger
 from app.database import init_db
@@ -32,6 +32,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(users.router)
 app.include_router(goals.router)
 app.include_router(tasks.router)
 app.include_router(checkins.router)

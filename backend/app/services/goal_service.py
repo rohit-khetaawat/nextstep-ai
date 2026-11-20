@@ -15,7 +15,7 @@ MAX_DISCOVERY_QUESTIONS = 12
 
 
 def get_or_create_default_user(db: Session) -> User:
-    user = db.query(User).first()
+    user = db.query(User).filter(User.name == "Guest").first()
     if user is None:
         user = User(name="Guest")
         db.add(user)
@@ -25,7 +25,9 @@ def get_or_create_default_user(db: Session) -> User:
 
 
 def create_goal(db: Session, payload: GoalCreateRequest) -> Goal:
-    user = get_or_create_default_user(db)
+    user = db.get(User, payload.user_id) if payload.user_id else None
+    if user is None:
+        user = get_or_create_default_user(db)
     goal = Goal(
         user_id=user.id,
         title=payload.title,

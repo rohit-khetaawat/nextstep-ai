@@ -1,7 +1,8 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { CalendarRange, Flag, MessageSquareText, Plus, Settings as SettingsIcon } from "lucide-react";
+import { CalendarRange, Flag, History as HistoryIcon, LogOut, MessageSquareText, Plus, Settings as SettingsIcon, UserRound } from "lucide-react";
 import { readLastGoal, type LastGoal } from "../lib/lastGoal";
+import { readUser, writeUser, type SessionUser } from "../lib/session";
 import { ThemeToggle } from "./ThemeToggle";
 
 function useLastGoal(): LastGoal | null {
@@ -18,6 +19,20 @@ function useLastGoal(): LastGoal | null {
   return goal;
 }
 
+function useUser(): SessionUser | null {
+  const [user, setUser] = useState<SessionUser | null>(() => readUser());
+  useEffect(() => {
+    const update = () => setUser(readUser());
+    window.addEventListener("nextstep:user", update);
+    window.addEventListener("storage", update);
+    return () => {
+      window.removeEventListener("nextstep:user", update);
+      window.removeEventListener("storage", update);
+    };
+  }, []);
+  return user;
+}
+
 function BrandMark() {
   // Three rising blocks with a marker line: a training block in miniature.
   return (
@@ -32,6 +47,7 @@ function BrandMark() {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const lastGoal = useLastGoal();
+  const user = useUser();
   const location = useLocation();
   const base = lastGoal ? `/goals/${lastGoal.id}` : null;
   const ready = !!(base && lastGoal?.hasRoadmap);
@@ -75,6 +91,28 @@ export function AppShell({ children }: { children: ReactNode }) {
               <Plus size={16} aria-hidden="true" />
               New goal
             </Link>
+            {user ? (
+              <>
+                <NavLink to="/history" className="btn btn-onshell btn-sm user-chip" aria-label={`History for ${user.username}`}>
+                  <HistoryIcon size={16} aria-hidden="true" />
+                  <span className="user-name">{user.username}</span>
+                </NavLink>
+                <button
+                  type="button"
+                  className="btn btn-onshell btn-sm hide-sm"
+                  aria-label="Sign out"
+                  title="Sign out"
+                  onClick={() => writeUser(null)}
+                >
+                  <LogOut size={16} aria-hidden="true" />
+                </button>
+              </>
+            ) : (
+              <NavLink to="/signin" className="btn btn-onshell btn-sm" aria-label="Sign in">
+                <UserRound size={16} aria-hidden="true" />
+                <span className="hide-xs">Sign in</span>
+              </NavLink>
+            )}
             <ThemeToggle />
             <NavLink to="/settings" className="btn btn-onshell btn-sm" aria-label="Settings">
               <SettingsIcon size={16} aria-hidden="true" />

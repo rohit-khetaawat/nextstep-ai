@@ -104,3 +104,23 @@ export interface AdaptResponse {
 export interface ApiErrorBody {
   detail: string;
 }
+
+export interface UserAccount {
+  id: number;
+  username: string;
+}
+
+export interface HistoryGoal {
+  id: number;
+  title: string;
+  status: string;
+  has_roadmap: boolean;
+  created_at: string;
+  answers: { question: string; answer: string; created_at: string }[];
+  checkins: { message: string; summary: string; created_at: string }[];
+}
+
+export interface HistoryResponse {
+  user: UserAccount;
+  goals: HistoryGoal[];
+}
